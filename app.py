@@ -20,7 +20,7 @@ def schedule_post():
     doc = {
         'num':count,
         'schedule': schedule_receive,
-        'done': date_receive,
+        'date': date_receive,
     }
 
     db.schedules.insert_one(doc)
