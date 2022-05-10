@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request, jsonify
 app = Flask(__name__)
 
+
 from pymongo import MongoClient
-client = MongoClient('mongodb+srv://test:sparta@cluster0.vrvtw.mongodb.net/Cluster0?retryWrites=true&w=majority')
+# client = MongoClient('mongodb+srv://test:sparta@cluster0.vrvtw.mongodb.net/Cluster0?retryWrites=true&w=majority')
+# db = client.dbsparta
+
+client = MongoClient('mongodb+srv://test:sparta@cluster0.xbvl6.mongodb.net/Cluster0?retryWrites=true&w=majority')
 db = client.dbsparta
 
 @app.route('/')
@@ -18,9 +22,12 @@ def schedule_post():
     count = len(schedule_list) + 1
 
     doc = {
-        'num':count,
+        'num': count,
         'schedule': schedule_receive,
         'date': date_receive,
+        'emoticon': '',
+        'comment': '',
+        'done': 0
     }
 
     db.schedules.insert_one(doc)
@@ -40,16 +47,17 @@ def schedule_fix():
     db.schedules.update_one({'num': int(num_receive)},{'$set':{'done': 0}})
     return jsonify({'msg': '수정 완료!'})
 
-# @app.route("/schedule/push", methods=["POST"])
-# def schedule_push():
-#     comment_receive = request.form['comment_give']
-#     emoticon_receive = request.form['emoticon_give']
-#     num_receive = request.form['num_give']
-#
-#     db.schedules.update({'num': int(num_receive)}, { '$push' : { "comment": comment_receive,
-#         "emoticon": emoticon_receive}})
-#
-#     return jsonify({'msg': '추가 완료!'})
+@app.route("/schedule/push", methods=["POST"])
+def comment_push():
+    comment_receive = request.form['comment_give']
+    print(comment_receive)
+    emoticon_receive = request.form['emoticon_give']
+    num_receive = request.form['num_give']
+
+    db.schedules.update({'num': int(num_receive)}, { '$push' : { "comment": comment_receive,
+        "emoticon": emoticon_receive}})
+
+    return jsonify({'msg': '추가 완료!'})
 
 @app.route("/schedule", methods=["GET"])
 def schedule_get():

@@ -150,32 +150,28 @@
                         let comment = rows[i]['comment']
                         let emoticon = rows[i]['emoticon']
 
-                        let temp_html = ``
-                            // `<li>
-                            //                  <h2> ${schedule}</h2>
-                            //                  <h4>${comment}</h4>
-                            //            <div class="emoticon">${emoticon}</div>
-                            //                  <div class="form-check form-check-inline">
-                            //                    <input onclick="show_comment(${num})" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-                            //                  </div>
-                            //              </li>`
-                        if (done == 0) {
-                            temp_html = `<li>
+                        let temp_html = ""
+
+                        if(done == 0) {
+                            temp_html =`<li>
                                             <h2> ${schedule}</h2>
-                                       <div class="emoticon">😞</div>
+                                            <div class="emoticon">?</div>
                                             <div class="form-check form-check-inline">
-                                              <input onclick="done_schedule(${num})" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-                                            </div>
-                                        </li>`
-                        } else {
-                            temp_html = `<li>
-                                            <h2 class="done"> ${schedule}</h2>
-                                            <div class="emoticon">😀</div>
-                                            <div class="form-check form-check-inline">
-                                              <input onclick="fix_schedule(${num})" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                                <input onclick="done_schedule(${num}); show_comment(${num})" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
                                             </div>
                                         </li>`
                         }
+                        else{
+                            temp_html = `<li>
+                                             <h2>${schedule}</h2>
+                                             <h4>${comment}</h4>
+                                             <div class="emoticon">${emoticon}</div>
+                                             <div class="form-check form-check-inline">
+                                                <input onclick="fix_schedule(${num})" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                             </div>
+                                         </li>`
+                        }
+
                         $('#bucket-list').append(temp_html)
                     }
 
@@ -205,7 +201,6 @@
                 data: {num_give: num},
                 success: function (response) {
                     alert(response["msg"])
-                    window.location.reload()
                 }
             });
         }
@@ -221,19 +216,19 @@
                 }
             });
         }
-        // function push_schedule(num){
-        //     let comment = $('#floatingTextarea').val()
-        //     let emoticon = $('#inputGroupSelect03').val()
-        //     $.ajax({
-        //         type: "POST",
-        //         url: "/schedule/push",
-        //         data: {comment_give : comment, emoticon_give : emoticon, num_give: num},
-        //         success: function (response) {
-        //             alert(response["msg"])
-        //             window.location.reload()
-        //         }
-        //     });
-        // }
+        function push_comment(num){
+            let comment = $('#floatingTextarea').val()
+            let emoticon = $('#inputGroupSelect03').val()
+            $.ajax({
+                type: "POST",
+                url: "/schedule/push",
+                data: {comment_give : comment, emoticon_give : emoticon, num_give: num},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
         function show_box() {
             $('#mypost').show()
         }
@@ -252,49 +247,49 @@
     </script>
 </head>
 <body>
-<div class="mypic">
-    <h1>HOW TO(DAY)</h1>
-</div>
-<div class="mycoment" id="mypost2">
-    <div class="form-floating">
-        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-        <label for="floatingTextarea">코멘트</label>
+    <div class="mypic">
+        <h1>HOW TO(DAY)</h1>
     </div>
-    <div class="slect_emotion">
-    <div class="input-group mb-3">
-        <button class="btn btn-outline-secondary" type="button">성취도</button>
-        <select class="form-select" id="inputGroupSelect03" aria-label="Example select with button addon">
-            <option selected>--선택하기--</option>
-            <option value="1">😆</option>
-            <option value="2">😄</option>
-            <option value="3">😀</option>
-            <option value="4">😞</option>
-            <option value="5">😨</option>
-        </select>
-    </div>
-    </div>
-    <div>
-        <div class="mybtu2">
-            <button onclick="push_schedule()" type="button" class="btn btn-success">추가하기</button>
-            <button onclick="hide_comment()" type="button" class="btn btn-outline-success">닫기</button>
+    <div class="mycoment" id="mypost2">
+        <div class="form-floating">
+            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
+            <label for="floatingTextarea">코멘트</label>
+        </div>
+        <div class="select_emotion">
+            <div class="input-group mb-3">
+                <button class="btn btn-outline-secondary" type="button">성취도</button>
+                <select class="form-select" id="inputGroupSelect03" aria-label="Example select with button addon">
+                    <option selected>--선택하기--</option>
+                    <option value="1">😆</option>
+                    <option value="2">😄</option>
+                    <option value="3">😀</option>
+                    <option value="4">😞</option>
+                    <option value="5">😨</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <div class="mybtu2">
+                <button onclick="push_comment()" type="button" class="btn btn-success">추가하기</button>
+                <button onclick="hide_comment()" type="button" class="btn btn-outline-success">닫기</button>
+            </div>
         </div>
     </div>
-</div>
-<div class="mybox" id="mypost">
-    <div class="mybucket">
-        <div class="hide_post">
-            <input id="schedule" class="form-control" type="text" placeholder="오늘 일정을 추가하세요">
-        <div class="mybtu">
-            <button onclick="save_schedule()" type="button" class="btn btn-success">추가하기</button>
-            <button onclick="hide_box()" type="button" class="btn btn-outline-success">닫기</button>
-        </div>
+    <div class="mybox" id="mypost">
+        <div class="mybucket">
+            <div class="hide_post">
+                <input id="schedule" class="form-control" type="text" placeholder="오늘 일정을 추가하세요">
+            <div class="mybtu">
+                <button onclick="save_schedule()" type="button" class="btn btn-success">추가하기</button>
+                <button onclick="hide_box()" type="button" class="btn btn-outline-success">닫기</button>
+            </div>
+            </div>
         </div>
     </div>
-</div>
-<div class="show_post">
-    <button onclick="show_box()" type="button" class="btn btn-outline-success">일정 추가하기</button>
-</div>
-<div class="myboxs" id="bucket-list">
-</div>
+    <div class="show_post">
+        <button onclick="show_box()" type="button" class="btn btn-outline-success">일정 추가하기</button>
+    </div>
+        <div class="myboxs" id="bucket-list">
+    </div>
 </body>
 </html>
