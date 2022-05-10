@@ -47,15 +47,15 @@ def schedule_fix():
     db.schedules.update_one({'num': int(num_receive)},{'$set':{'done': 0}})
     return jsonify({'msg': '수정 완료!'})
 
-@app.route("/schedule/push", methods=["POST"])
-def comment_push():
+@app.route("/schedule/comment", methods=["POST"])
+def comment_save():
     comment_receive = request.form['comment_give']
-    print(comment_receive)
     emoticon_receive = request.form['emoticon_give']
-    num_receive = request.form['num_give']
+    #num_receive = request.form['num_giving']
 
-    db.schedules.update({'num': int(num_receive)}, { '$push' : { "comment": comment_receive,
-        "emoticon": emoticon_receive}})
+    # db.schedules.update({'num': int(num_receive)}, { '$push' : { "comment": comment_receive,
+    #     "emoticon": emoticon_receive}})
+    # db.schedules.update({'num': int(num_receive)}, {'$push': {"comment": comment_receive}})
 
     return jsonify({'msg': '추가 완료!'})
 

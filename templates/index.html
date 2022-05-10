@@ -216,19 +216,19 @@
                 }
             });
         }
-        function push_comment(num){
-            let comment = $('#floatingTextarea').val()
-            let emoticon = $('#inputGroupSelect03').val()
+
+        function push_comment(){
             $.ajax({
                 type: "POST",
-                url: "/schedule/push",
-                data: {comment_give : comment, emoticon_give : emoticon, num_give: num},
+                url: "/schedule/comment",
+                data: {comment_give: $('#comment').val(), emoticon_give: $('#emoticon').val()},
                 success: function (response) {
                     alert(response["msg"])
                     window.location.reload()
                 }
             });
         }
+
         function show_box() {
             $('#mypost').show()
         }
@@ -252,13 +252,13 @@
     </div>
     <div class="mycoment" id="mypost2">
         <div class="form-floating">
-            <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea"></textarea>
-            <label for="floatingTextarea">코멘트</label>
+            <textarea class="form-control" placeholder="Leave a comment here" id="comment"></textarea>
+            <label for="comment">코멘트</label>
         </div>
         <div class="select_emotion">
             <div class="input-group mb-3">
                 <button class="btn btn-outline-secondary" type="button">성취도</button>
-                <select class="form-select" id="inputGroupSelect03" aria-label="Example select with button addon">
+                <select class="form-select" id="emoticon" aria-label="Example select with button addon">
                     <option selected>--선택하기--</option>
                     <option value="1">😆</option>
                     <option value="2">😄</option>
