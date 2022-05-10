@@ -3,7 +3,7 @@
     <head>
 
         <!-- Webpage Title -->
-        <title>Hello, world!</title>
+        <title>Log In | SWEETER</title>
 
         <!-- Required meta tags -->
         <meta charset="utf-8">
@@ -11,30 +11,113 @@
 
         <!-- Bulma CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+        <!-- Font Awesome CSS -->
+        <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
         <!-- JS -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
+        <style>
+
+            *{
+                font-family: 'Oleo Script', cursive;
+            }
+
+            body {
+                background-color: #ffffff;
+                min-height: 50vh;
+            }
+
+            .wrap {
+                width: 500px;
+                margin: auto;
+            }
+
+            .section {
+                padding: 1rem 0rem;
+                max-width: 750px;
+                margin: auto;
+            }
+
+            .login-title {
+                width: 500px;
+                height: 350px;
+
+                text-align: center;
+
+                background-image: url("https://ifh.cc/g/AXO2Tx.jpg");
+                background-size: cover;
+                background-position: center;
+
+                border-radius: 50px;
+
+                padding-top: 40px;
+
+                margin-top: 20px;
+            }
+
+            .title {
+                font-weight: 800;
+                font-size: 4rem;
+                text-shadow: 7px 7px 7px #020202;
+            }
+
+            .subtitle {
+                font-size: 2rem;
+                text-shadow: 7px 7px 7px #020202;
+            }
+
+            .is-login {
+                color: rgba(30, 176, 26, 0.71) !important;
+            }
+
+            .button.is-sparta {
+                background-color: #1eb01a;
+                border-color: transparent;
+                color: #ffffff !important;
+            }
+
+            .button.is-sparta.is-outlined {
+                background-color: transparent;
+                border-color: #9359d9;
+                color: #1eb01a !important;
+            }
+
+            .login_btn {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                margin: 20px auto 20px auto;
+
+            .login_btn > button {
+                margin: 20px 20px 20px 20px;
+            }
+            h1 {
+                text-shadow: 17px 17px 17px #ff0000;
+            }
+
+
+
+
+        </style>
 
         <script>
-            {% if msg %}
-                alert("{{ msg }}")
-            {% endif %}
-            // ['쿠키'라는 개념에 대해 알아봅시다]
-            // 로그인을 구현하면, 반드시 쿠키라는 개념을 사용합니다.
-            // 페이지에 관계없이 브라우저에 임시로 저장되는 정보입니다. 키:밸류 형태(딕셔너리 형태)로 저장됩니다.
-            // 쿠키가 있기 때문에, 한번 로그인하면 네이버에서 다시 로그인할 필요가 없는 것입니다.
-            // 브라우저를 닫으면 자동 삭제되게 하거나, 일정 시간이 지나면 삭제되게 할 수 있습니다.
-            function login() {
+            // {% if msg %}
+            //     alert("{{ msg }}")
+            // {% endif %}
+            function sign_in() {
                 $.ajax({
                     type: "POST",
-                    url: "/api/login",
-                    data: {id_give: $('#userid').val(), pw_give: $('#userpw').val()},
+                    url: "/sign_in",
+                    data: {
+                        username_give: "",
+                        password_give: ""
+                    },
                     success: function (response) {
                         if (response['result'] == 'success') {
-                            // 로그인이 정상적으로 되면, 토큰을 받아옵니다.
-                            // 이 토큰을 mytoken이라는 키 값으로 쿠키에 저장합니다.
-                            $.cookie('mytoken', response['token']);
+                            $.cookie('mytoken', response['token'], {path: '/'});
 
                             alert('로그인 완료!')
                             window.location.href = '/'
@@ -46,40 +129,116 @@
                 })
             }
 
+            function sign_up() {
+                let username = ""
+                let password = ""
+                let password2 = ""
+
+                $.ajax({
+                    type: "POST",
+                    url: "/sign_up/save",
+                    data: {
+                        username_give: username,
+                        password_give: password
+                    },
+                    success: function (response) {
+                        alert("회원가입을 축하드립니다!")
+                        window.location.replace("/login")
+                    }
+                });
+
+            }
+
         </script>
 
     </head>
     <body>
-        <div class="section has-text-centered">
-            <h1 class="title">로그인 페이지</h1>
-            <div class="container" style="width:60%">
-                <div class="field is-horizontal">
-                    <div class="field-label is-normal">
-                        <label class="label" for="userid">ID</label>
-                    </div>
-                    <div class="field-body">
-                        <div class="field">
-                            <div class="control">
-                                <input type="text" class="input" id="userid" aria-describedby="emailHelp"
-                                       placeholder="My ID">
-                            </div>
-                        </div>
+
+
+        <div class="wrap">
+            <section class="hero is-white">
+                <div class="login-title">
+                    <div class="hero-body has-text-centered" style="padding-bottom:1rem;margin:auto;">
+                        <h1 class="title is-login">How to</h1>
+                        <h3 class="subtitle is-login">(day)</h3>
                     </div>
                 </div>
-                <div class="field is-horizontal">
-                    <div class="field-label is-normal">
-                        <label class="label" for="userpw">PW</label>
-                    </div>
-                    <div class="field-body">
-                        <div class="field">
-                            <div class="control">
-                                <input type="password" class="input" id="userpw" placeholder="My Password">
+            </section>
+
+            <section class="section">
+                <div class="container">
+                    <div class="box" style="max-width: 480px;margin:auto">
+                        <article class="media">
+                            <div class="media-content">
+                                <div class="content">
+                                    <div class="field has-addons">
+                                        <div class="control has-icons-left" style="width:100%">
+                                            <input id="input-username" class="input" type="text" placeholder="user">
+                                            <span class="icon is-small is-left"><i class="fa fa-user"></i></span>
+                                        </div>
+                                        <div id="btn-check-dup" class="control">
+                                            <button class="button is-sparta" onclick="check_dup()">CHECK</button>
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="field">
+                                        <div class="control has-icons-left">
+                                            <input id="input-password" class="input" type="password" placeholder="password">
+                                            <span class="icon is-small is-left"><i class="fa fa-lock"></i></span>
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+                                    <div class="login_btn">
+                                        <nav class="level is-mobile">
+
+                                            <button style="width:200px;hegiht:50px;" class="level-item button is-sparta" onclick="sign_in()">
+                                                LOGIN
+                                            </button>
+
+                                            <button style="width:200px;hegiht:50px;" class="level-item button is-sparta is-outlined" onclick="toggle_sign_up()">
+                                                SIGN UP
+                                            </button>
+                                        </nav>
+
+                                    </div>
+
+
+                                <div id="sign-up-box">
+                                    <div class="mb-5">
+                                        <div class="field">
+                                            <div class="control has-icons-left" style="width:100%">
+                                                <input id="input-password2" class="input" type="password"
+                                                       placeholder="password re-enter">
+                                                <span class="icon is-small is-left"><i class="fa fa-lock"></i></span>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+                                    <nav class="level is-mobile">
+                                        <button class="level-item button is-sparta" onclick="sign_up()">
+                                            sign up
+                                        </button>
+                                        <button class="level-item button is-sparta is-outlined" onclick="toggle_sign_up()">
+                                            cancel
+                                        </button>
+                                    </nav>
+                                </div>
+
+
                             </div>
-                        </div>
+                        </article>
                     </div>
+
                 </div>
-                <button class="button is-primary" onclick="login()">로그인</button>
-            </div>
+            </section>
         </div>
+
+
     </body>
 </html>
