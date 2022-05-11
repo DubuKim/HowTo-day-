@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <title>Title</title>
+    <style>
+        .container{
+            background-color: green;
+            max-width: 200px;
+            width: 95%;
+            margin: 10px 0px 0px auto;
+        }
+        body {
+                background-color: rgba(28, 101, 185, 0.45);
+                min-height: 100vh;
+                padding-top: 3.25rem;
+            }
+
+        .card{
+            width: 95%;
+            margin: 5px 10px 5px 10px;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            show_list()
+        });
+
+    {#    function show_list() {#}
+    {#        $.ajax({#}
+    {#            type: "GET",#}
+    {#            url: "/test/show",#}
+    {#            data: {},#}
+    {#            success: function (response) {#}
+    {#                rows = response['abc']#}
+    {##}
+    {#                for (let i = 0; i < rows.length; i++) {#}
+    {#                    let comment = rows[i]['comment']#}
+    {#                    let name = rows[i]['name']#}
+    {#                    let temp_html = `${comment}`#}
+    {#                    console.log(temp_html)#}
+    {#                    $('#testlist').append(temp_html)#}
+    {#                }#}
+    {#            }#}
+    {#        });#}
+    {#    }#}
+    </script>
+</head>
+<body>
+    <nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="/">
+                <img src="{{ url_for('static', filename='logo.png') }}">
+                <strong class="is-sparta"
+                        style="font-family: 'Stylish', sans-serif;font-size: 2rem; larger;">HowTo</strong>
+            </a>
+        </div>
+    </nav>
+    <div>
+        <ul id="testlist">
+        </ul>
+    </div>
+    <div class="container">
+        <form action="/test" method="POST">
+{#                <div class="form-floating col-sm-5">#}
+                    <input type="text" class="form-control " id="date" placeholder="ex)0516" name="id">
+            {#                </div>#}
+            <button type="submit" class="btn btn-primary" id="search">search</button>
+        </form>
+    </div>
+
+    <div class="card-group">
+        <div class="card">
+            <div class="card-body">
+                {% if firSchedule %}
+                    <h5 class="card-title">{{ firSchedule[0]["name"] }}</h5>
+                {% endif %}
+                <p class="card-text">
+                <div class="schedule">
+                    {% if firSchedule %}
+                        {% for schedule in firSchedule %}
+                            {% set name = schedule["name"] %}
+                            {% set comment = schedule["comment"] %}
+                            <li>{{ name }} : {{ comment }}</li>
+                        {% endfor %}
+                    {% else %}
+                        <h2>no data</h2>
+                    {% endif %}
+                </div>
+                </p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                {% if secSchedule %}
+                    <h5 class="card-title">{{ secSchedule[0]["name"] }}</h5>
+                {% endif %}
+                <p class="card-text">
+                <div class="schedule">
+                    {% if secSchedule %}
+                        {% for schedule in secSchedule %}
+                            {% set name = schedule["name"] %}
+                            {% set comment = schedule["comment"] %}
+                            <li>{{ name }} : {{ comment }}</li>
+                        {% endfor %}
+                    {% else %}
+                        <h2>no data</h2>
+                    {% endif %}
+                </div>
+                </p>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                {% if thrSchedule %}
+                    <h5 class="card-title">{{ thrSchedule[0]["name"] }}</h5>
+                {% endif %}
+                <p class="card-text">
+                <div class="schedule">
+                    {% if thrSchedule %}
+                        {% for schedule in thrSchedule %}
+                            {% set name = schedule["name"] %}
+                            {% set comment = schedule["comment"] %}
+                            <li>{{ name }} : {{ comment }}</li>
+                        {% endfor %}
+                    {% else %}
+                        <h2>no data</h2>
+                    {% endif %}
+                </div>
+                </p>
+            </div>
+        </div>
+    </div>
+
+
+{#    <div class="schedule">#}
+{#        {% for schedule in firSchedule %}#}
+{#            {% set name = schedule["name"] %}#}
+{#            {% set comment = schedule["comment"] %}#}
+{#            <li>{{ name }} : {{ comment }}</li>#}
+{#        {% endfor %}#}
+{#    </div>#}
+</body>
+</html>
