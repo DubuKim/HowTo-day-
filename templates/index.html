@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
+
+    <title>인생 버킷리스트</title>
+
+    <style>
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        .mypic {
+            width: 100%;
+            height: 200px;
+
+            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://i0.wp.com/sharehows.com/wp-content/uploads/2017/04/%EC%A0%9C%EC%A3%BC%EC%9D%BC%EC%A0%95.jpg?fit=800%2C400&ssl=1');
+            background-position: center;
+            background-size: cover;
+
+            color: white;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mypic > h1 {
+            font-size: 30px;
+        }
+
+        .mybox {
+            width: 95%;
+            max-width: 400px;
+            padding: 20px;
+            box-shadow: 0px 0px 5px 0px green;
+            margin: 20px auto;
+            border-radius: 10px;
+
+            display: none
+        }
+        .myboxs {
+            width: 95%;
+            max-width: 800px;
+            padding: 20px;
+            box-shadow: 0px 0px 5px 0px green;
+            margin: 20px auto;
+            border-radius: 10px;
+
+        }
+
+
+        .mybucket {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mybucket > input {
+            width: 70%;
+        }
+
+        .myboxs > li {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 10px;
+            min-height: 48px;
+        }
+
+        .myboxs > li > h2 {
+            max-width: 75%;
+            font-size: 20px;
+            font-weight: 500;
+            margin-right: auto;
+            margin-bottom: 0px;
+        }
+
+        .myboxs > li > h2.done {
+            text-decoration: line-through
+        }
+        .mybtu {
+            margin-top: 20px
+        }
+        .mybtu > button {
+
+            margin-right: 20px;
+        }
+        .mybtu2{
+            float: right;
+        }
+        .mybtu2 > button {
+             margin-right: 5px;
+        }
+        .show_post {
+            width: 95%;
+            max-width: 800px;
+            margin: 60px auto 0px auto;
+            border-radius: 10px;
+        }
+        .emoticon {
+            margin-right: 10px;
+        }
+
+        .mycoment {
+            width: 95%;
+            max-width: 400px;
+            padding: 20px;
+            box-shadow: 0px 0px 5px 0px green;
+            margin: 20px auto;
+            border-radius: 10px;
+            height: 210px;
+            display: none
+        }
+        .slect_emotion {
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            show_schedule();
+        });
+
+        let whichCard = 0;
+
+        function show_schedule() {
+            $.ajax({
+                type: "GET",
+                url: "/sc/schedule",
+                data: {},
+                success: function (response) {
+                    let rows = response['schedules']
+                    for (let i = 0; i < rows.length; i++) {
+                        let schedule = rows[i]['schedule']
+                        let num = rows[i]['num']
+                        let done = rows[i]['done']
+                        let comment = rows[i]['comment']
+                        let emoticon = rows[i]['emoticon']
+
+                        let temp_html = ""
+
+                        if(done == 0) {
+                            temp_html =`<li>
+                                            <h2> ${schedule}</h2>
+                                            <div class="emoticon">?</div>
+                                            <div class="form-check form-check-inline">
+                                                <input onclick="done_schedule(${num}); show_comment(${num})" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                            </div>
+                                        </li>`
+                            whichCard = num
+                        }
+                        else{
+                            temp_html = `<li>
+                                             <h2>${schedule}</h2>
+                                             <h4>${comment}</h4>
+                                             <div class="emoticon">${emoticon}</div>
+                                             <div class="form-check form-check-inline">
+                                                <input onclick="fix_schedule(${num})" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                             </div>
+                                         </li>`
+                        }
+
+                        $('#bucket-list').append(temp_html)
+                    }
+
+                }
+            });
+        }
+
+        function save_schedule() {
+            let schedule = $('#schedule').val()
+            let today = new Date().toISOString();
+
+            $.ajax({
+                type: "POST",
+                url: "/sc/schedule",
+                data: {schedule_give: schedule, date_give : today },
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+
+        function done_schedule(num) {
+            $.ajax({
+                type: "POST",
+                url: "/sc/schedule/done",
+                data: {num_give: num},
+                success: function (response) {
+                    alert(response["msg"])
+                }
+            });
+        }
+
+        function fix_schedule(num) {
+            $.ajax({
+                type: "POST",
+                url: "/sc/schedule/fix",
+                data: {num_give: num},
+                success: function (response) {
+                    //alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+
+        function push_comment(){
+            console.log(whichCard)
+            $.ajax({
+                type: "POST",
+                url: "/sc/schedule/comment",
+                data: {comment_give: $('#comment').val(), emoticon_give: $('#emoticon').val(), num_give: whichCard},
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload()
+                }
+            });
+        }
+
+        function show_box() {
+            $('#mypost').show()
+        }
+
+        function hide_box() {
+            $('#mypost').hide()
+        }
+        function show_comment() {
+            $('#mypost2').show()
+        }
+
+        function hide_comment() {
+            $('#mypost2').hide()
+        }
+
+    </script>
+</head>
+<body>
+    <div class="mypic">
+        <h1>HOW TO(DAY)</h1>
+    </div>
+    <div class="mycoment" id="mypost2">
+        <div class="form-floating">
+            <textarea class="form-control" placeholder="Leave a comment here" id="comment"></textarea>
+            <label for="comment">코멘트</label>
+        </div>
+        <div class="select_emotion">
+            <div class="input-group mb-3">
+                <button class="btn btn-outline-secondary" type="button">성취도</button>
+                <select class="form-select" id="emoticon" aria-label="Example select with button addon">
+                    <option selected>--선택하기--</option>
+                    <option value="1">😆</option>
+                    <option value="2">😄</option>
+                    <option value="3">😀</option>
+                    <option value="4">😞</option>
+                    <option value="5">😨</option>
+                </select>
+            </div>
+        </div>
+        <div>
+            <div class="mybtu2">
+                <button onclick="push_comment()" type="button" class="btn btn-success">추가하기</button>
+                <button onclick="hide_comment()" type="button" class="btn btn-outline-success">닫기</button>
+            </div>
+        </div>
+    </div>
+    <div class="mybox" id="mypost">
+        <div class="mybucket">
+            <div class="hide_post">
+                <input id="schedule" class="form-control" type="text" placeholder="오늘 일정을 추가하세요">
+            <div class="mybtu">
+                <button onclick="save_schedule()" type="button" class="btn btn-success">추가하기</button>
+                <button onclick="hide_box()" type="button" class="btn btn-outline-success">닫기</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <div class="show_post">
+        <button onclick="show_box()" type="button" class="btn btn-outline-success">일정 추가하기</button>
+    </div>
+    <div>
+        <button onclick="window.location.href='/test'">go</button>
+    </div>
+        <div class="myboxs" id="bucket-list">
+    </div>
+</body>
+</html>
