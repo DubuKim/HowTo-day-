@@ -51,10 +51,13 @@ def schedule_fix():
 def comment_save():
     comment_receive = request.form['comment_give']
     emoticon_receive = request.form['emoticon_give']
-    #num_receive = request.form['num_giving']
+    num_receive = request.form['num_give']
 
-    # db.schedules.update({'num': int(num_receive)}, { '$push' : { "comment": comment_receive,
-    #     "emoticon": emoticon_receive}})
+    db.schedules.update_one({'num': int(num_receive)}, {"$set" : {"comment":comment_receive}})
+    db.schedules.update_one({'num': int(num_receive)}, {"$set": {"emoticon": emoticon_receive}})
+
+    # db.schedules.update_one({'num': int(num_receive)}, { '$push' : { "comment": comment_receive,
+    #      "emoticon": emoticon_receive}})
     # db.schedules.update({'num': int(num_receive)}, {'$push': {"comment": comment_receive}})
 
     return jsonify({'msg': '추가 완료!'})
