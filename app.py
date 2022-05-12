@@ -202,10 +202,11 @@ def beforeSC():
         firList = sorted(firList, key=lambda x: x['time'])
         secList = sorted(secList, key=lambda x: x['time'])
         thrList = sorted(secList, key=lambda x: x['time'])
-        print(firList)
         return render_template('beforeSC.html', firSchedule = firList,
                                secSchedule = secList,
                                thrSchedule = thrList)
+
+    return render_template('beforeSC.html')
 
 
 
