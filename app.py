@@ -114,37 +114,65 @@ def schedule_post():
 
 @app.route("/sc/schedule/done", methods=["POST"])
 def schedule_done():
+    tk = request.cookies.get('mytoken')
+    id = jwt.decode(tk, SECRET_KEY, algorithms=['HS256'])['id']
 
     time_receive = request.form['time_give']
-    if time_receive == "0":
-        time_receive = "0000"
-    elif len(time_receive) <= 3:
-        time_receive = oct(int(time_receive))
-        time_receive = "0" + time_receive[2:]
 
-    db.schedules.update_one({'time': time_receive}, {'$set': {'done': 1}})
+    if int(time_receive) <= 500:
+        time_receive = oct(int(time_receive)).split('o')[1]
+        if len(time_receive) == "0":
+            time_receive = "0000"
+        elif len(time_receive) == 1:
+            time_receive = "000" + time_receive
+        elif len(time_receive) == 2:
+            time_receive = "00" + time_receive
+        elif len(time_receive) == 3:
+            time_receive = "0" + time_receive
+    else:
+        if len(time_receive) == 3:
+            time_receive = "0" + time_receive
+
+
+    print(time_receive)
+    db.schedules.update_one({"id": id, "time": time_receive}, {'$set': {'done': 1}})
     return jsonify({'msg': '일정 완료!'})
 
 @app.route("/sc/schedule/fix", methods=["POST"])
 def schedule_fix():
-    time_receive = request.form['time_give']
-    if time_receive == "0":
-        time_receive = "0000"
-    elif len(time_receive) <= 3:
-        time_receive = oct(int(time_receive))
-        time_receive = "0" + time_receive[2:]
+    tk = request.cookies.get('mytoken')
+    id = jwt.decode(tk, SECRET_KEY, algorithms=['HS256'])['id']
 
-    db.schedules.update_one({'time': time_receive}, {'$set': {'done': 0}})
+    time_receive = request.form['time_give']
+
+    if int(time_receive) <= 500:
+        time_receive = oct(int(time_receive)).split('o')[1]
+        if len(time_receive) == "0":
+            time_receive = "0000"
+        elif len(time_receive) == 1:
+            time_receive = "000" + time_receive
+        elif len(time_receive) == 2:
+            time_receive = "00" + time_receive
+        elif len(time_receive) == 3:
+            time_receive = "0" + time_receive
+    else:
+        if len(time_receive) == 3:
+            time_receive = "0" + time_receive
+
+    db.schedules.update_one({"id": id, "time": time_receive}, {'$set': {'done': 0}})
     return jsonify({'msg': '수정 완료!'})
 
 @app.route("/sc/schedule/comment", methods=["POST"])
 def comment_save():
+    tk = request.cookies.get('mytoken')
+    id = jwt.decode(tk, SECRET_KEY, algorithms=['HS256'])['id']
+
     comment_receive = request.form['comment_give']
     emoticon_receive = request.form['emoticon_give']
     time_receive = request.form['time_give']
 
-    db.schedules.update_one({'time': time_receive}, {"$set" : {"comment": comment_receive}})
-    db.schedules.update_one({'time': time_receive}, {"$set": {"emoticon": emoticon_receive}})
+    db.schedules.update_one({"id": id, "time": time_receive}, {"$set" : {"comment": comment_receive}})
+    db.schedules.update_one({"id": id, "time": time_receive}, {"$set": {"emoticon": emoticon_receive}})
 
     return jsonify({'msg': '추가 완료!'})
 
