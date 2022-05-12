@@ -170,7 +170,7 @@ def beforeSC():
     date = request.form['id']
     if date != "":
         sList = list(db.schedules.find({"id": id}, {'_id': False}))
-        schedule_list = sorted(sList, key=lambda x: x['id'], reverse=True)
+        schedule_list = sorted(sList, key=lambda x: x['id'])
         lowList = []
 
         #이전 날짜들의 스케쥴을 전부 저장
@@ -187,9 +187,9 @@ def beforeSC():
         if not lowList:
             return render_template('beforeSC.html')
 
-        #끝에서 부터 date를 비교해가며 list들에 추가
+        #date를 비교해가며 list들에 추가
         #무조건 한 리스트는 찰 수 밖에 없어서 예외처리 할 필요 없음
-        for i in range(0, len(lowList)):
+        for i in range(len(lowList) - 1, -1, -1):
             if lowList[i]["date"] == lowList[0]["date"]:
                 firList.append(lowList[i])
             elif lowList[i]["date"] != firList[0]["date"]:
@@ -201,7 +201,7 @@ def beforeSC():
 
         firList = sorted(firList, key=lambda x: x['time'])
         secList = sorted(secList, key=lambda x: x['time'])
-        thrList = sorted(secList, key=lambda x: x['time'])
+        thrList = sorted(thrList, key=lambda x: x['time'])
         return render_template('beforeSC.html', firSchedule = firList,
                                secSchedule = secList,
                                thrSchedule = thrList)
