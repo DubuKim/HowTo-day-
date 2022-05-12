@@ -399,10 +399,11 @@
         }
 
         function done_schedule(time) {
+            var t = new String(time)
             $.ajax({
                 type: "POST",
                 url: "/sc/schedule/done",
-                data: {time_give: time},
+                data: {time_give: t},
                 success: function (response) {
                     alert(response["msg"])
                 }

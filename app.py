@@ -116,9 +116,13 @@ def schedule_post():
 def schedule_done():
 
     time_receive = request.form['time_give']
-    if len(time_receive) == 3:
+    print(time_receive)
+    if time_receive == "0":
+        time_receive = "0000"
+    elif len(time_receive) <= 3:
         time_receive = oct(int(time_receive))
         time_receive = "0" + time_receive[2:]
+    print(time_receive)
 
     db.schedules.update_one({'time': time_receive}, {'$set': {'done': 1}})
     return jsonify({'msg': '일정 완료!'})
@@ -184,12 +188,9 @@ def beforeSC():
             secList = []
             thrList = []
 
-
             ##low list가 비어있는 상태
             if not lowList:
                 return render_template('beforeSC.html')
-
-            print(lowList)
 
             #date를 비교해가며 list들에 추가
             #무조건 한 리스트는 찰 수 밖에 없어서 예외처리 할 필요 없음
