@@ -14,7 +14,10 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
 
-    <title></title>
+    <!-- Bulma CSS 링크 -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
+
+    <title>Main|HowToDay</title>
 
     <style>
         * {
@@ -25,11 +28,11 @@
             width: 100%;
             height: 200px;
 
-            background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://i0.wp.com/sharehows.com/wp-content/uploads/2017/04/%EC%A0%9C%EC%A3%BC%EC%9D%BC%EC%A0%95.jpg?fit=800%2C400&ssl=1');
+            background-image: url('https://i0.wp.com/sharehows.com/wp-content/uploads/2017/04/%EC%A0%9C%EC%A3%BC%EC%9D%BC%EC%A0%95.jpg?fit=800%2C400&ssl=1');
             background-position: center;
             background-size: cover;
 
-            color: white;
+            color: rgba(30, 176, 26, 0.68);
 
             display: flex;
             flex-direction: column;
@@ -37,8 +40,11 @@
             justify-content: center;
         }
 
+
         .mypic > h1 {
-            font-size: 30px;
+            font-weight: 800;
+            font-size: 4rem;
+            text-shadow: 7px 7px 7px #020202;
         }
 
         .mybox {
@@ -70,8 +76,10 @@
         }
 
         .mybucket > input {
-            width: 70%;
+            width: 57%;
         }
+
+
 
         .myboxs > li {
             display: flex;
@@ -94,25 +102,40 @@
         .myboxs > li > h2.done {
             text-decoration: line-through
         }
-        .mybtu {
-            margin-top: 20px
-        }
-        .mybtu > button {
 
-            margin-right: 20px;
+        .main_btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            margin: 20px auto 20px auto;
         }
-        .mybtu2{
-            float: right;
+
+        .out_btn {
+            display: flex;
+            flex-direction: column;
+            align-items: self-end;
+            justify-content: flex-start;
+            margin: 20px auto 20px auto;
         }
-        .mybtu2 > button {
-             margin-right: 5px;
-        }
+
+
+
+
         .show_post {
             width: 95%;
             max-width: 800px;
             margin: 60px auto 0px auto;
             border-radius: 10px;
         }
+
+        .post_end {
+            width: 95%;
+            max-width: 800px;
+            margin: 60px auto 0px auto;
+            border-radius: 10px;
+        }
+
         .emoticon {
             margin-right: 10px;
         }
@@ -131,35 +154,171 @@
             margin-top: 20px;
         }
         .timesty {margin-bottom: 20px;}
+
+        body {
+            background-color: rgba(225, 225, 188, 0.45);
+            min-height: 100vh;
+        }
+        .put_sch {
+            background-color: transparent;
+            color: white;
+        }
+
+        .add_btn {
+
+            margin-top: 10px;
+
+            background: green;
+            color: white;
+            border: none;
+            position: relative;
+            height: 35px;
+            font-size: 1.2em;
+            padding: 0.2em;
+            cursor: pointer;
+            transition: 800ms ease all;
+            outline: outset;
+            outline-color: rgba(30, 176, 26, 0.42);
+        }
+
+        .add_btn:hover {
+            background: rgba(15, 82, 12, 0.6);
+            color: rgb(9, 255, 0);
+        }
+
+        .add_btn:before, .test_btn:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 2px;
+            width: 0;
+            background: rgba(30, 176, 26, 0.42);
+            transition: 400ms ease all;
+        }
+
+        .add_btn:after {
+            right: inherit;
+            top: inherit;
+            left: 0;
+            bottom: 0;
+        }
+
+        .add_btn:hover:before, .test_btn:hover:after {
+            width: 100%;
+            transition: 800ms ease all;
+        }
+
+        .close_btn {
+
+            margin-top: 10px;
+
+            background: #800000;
+            color: rgb(255, 255, 255);
+            border: none;
+            position: relative;
+            height: 35px;
+            font-size: 1.2em;
+            padding: 0.2em;
+            cursor: pointer;
+            transition: 800ms ease all;
+            outline: outset;
+            outline-color: rgba(30, 176, 26, 0.42);
+        }
+
+        .close_btn:hover {
+            background: rgba(131, 1, 1, 0.76);
+            color: rgb(255, 0, 0);
+        }
+
+        .close_btn:before, .test_btn:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 2px;
+            width: 0;
+            background: rgba(30, 176, 26, 0.42);
+            transition: 400ms ease all;
+        }
+
+        .close_btn:after {
+            right: inherit;
+            top: inherit;
+            left: 0;
+            bottom: 0;
+        }
+
+        .close_btn:hover:before, .test_btn:hover:after {
+            width: 100%;
+            transition: 800ms ease all;
+        }
+
+
+
+
+
+        .mybtu > button {
+
+            margin: 5px;
+        }
+
+        .com_btn > button {
+            margin: 5px;
+        }
+
+
+        input[type=text] {
+            color: green;
+            background-color: transparent; /*배경색*/
+            border:1.5px solid green; /*테두리 두께, 선스타일, 색상*/
+        }
+        input[type=text]:focus {
+            width: 100%;
+            border: 2px solid green;
+            box-shadow: 0 0 8px 0 green;
+            background-color: rgba(255,255,255,1);
+        }
+        input[type=time] {
+            color: green;
+            background-color: transparent; /*배경색*/
+            border:1.5px solid green; /*테두리 두께, 선스타일, 색상*/
+            border-radius: 4px;
+
+        }
+        input[type=time]:focus {
+
+            width: 70%;
+            border: 2px solid green;
+            box-shadow: 0 0 8px 0 green;
+            background-color: rgba(255,255,255,1);
+            outline: none;
+        }
+
+        .form-control {
+            background-color: transparent;
+            margin-bottom: 10px;
+            border-color: #007f01;
+
+        }
+
+        .form-select {
+            background-color: transparent;
+            border-color: #007f01;
+        }
+
+
+
+
+
     </style>
     <script>
         $(document).ready(function () {
             show_schedule();
         });
 
-        window.onload = function() {                         // 페이지가 로딩되면 실행
-            printTime();
-        }
-
-        function printTime() {
-            let clock = document.getElementById("clock");            // 출력할 장소 선택
-            let now = new Date();                                                  // 현재시간
-            let month = now.getMonth() + 1
-            let day = now.getDate()
-            //1자리면 앞에 0을 붙여줌
-            if(now.getMonth() < 10){
-                month = "0" + (now.getMonth() + 1)
-            }
-            if(now.getDate() < 10){
-                day = "0" + now.getDate()
-            }
-            let nowTime = now.getFullYear() + "년" + month + "월" + day + "일";
-            clock.innerHTML = nowTime;           // 현재시간을 출력
-            setTimeout("printTime()", 1000);         // setTimeout(“실행할함수”,시간) 시간은1초의 경우 1000
-        }
-
-
         let scTime = "";
+
         function show_schedule() {
             $.ajax({
                 type: "GET",
@@ -178,7 +337,7 @@
                         if(done == 0) {
                             temp_html =`<li>
                                             <h10>${time.slice(0, 2) + ":" + time.slice(2,)}</h10>&nbsp&nbsp<h2>${schedule}</h2>
-                                            <div class="emoticon">done?</div>
+                                            <div class="emoticon">❓</div>
                                             <div class="form-check form-check-inline">
                                                 <input onclick="done_schedule(${time}); show_comment(${time})" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
                                             </div>
@@ -238,7 +397,6 @@
                 url: "/sc/schedule/fix",
                 data: {time_give: time},
                 success: function (response) {
-                    alert(response["msg"])
                     window.location.reload()
                 }
             });
@@ -283,16 +441,11 @@
 
         }
 
-        function nowDate(){
-
-        }
-
     </script>
 </head>
-<body>
+<div>
     <div class="mypic">
         <h1>HOW TO(DAY)</h1>
-        <div><span id="clock"></span></div>
     </div>
     <div class="mycoment" id="mypost2">
         <div class="form-floating">
@@ -301,7 +454,7 @@
         </div>
         <div class="select_emotion">
             <div class="input-group mb-3">
-                <button class="btn btn-outline-secondary" type="button">성취도</button>
+                <button class="btn btn-outline-success" type="button">성취도</button>
                 <select class="form-select" id="emoticon" aria-label="Example select with button addon">
                     <option selected>--선택하기--</option>
                     <option value="😆">😆</option>
@@ -313,32 +466,49 @@
             </div>
         </div>
         <div>
-            <div class="mybtu2">
-                <button onclick="push_comment()" type="button" class="btn btn-success">추가하기</button>
-                <button onclick="hide_comment()" type="button" class="btn btn-outline-success">닫기</button>
+            <div class="com_btn">
+                <button onclick="push_comment()" type="button" class="add_btn">추가하기</button>
+                <button onclick="hide_comment()" type="button" lass="close_btn">닫기</button>
             </div>
         </div>
     </div>
     <div class="mybox" id="mypost">
         <div class="mybucket">
             <input type="time" class="timesty" id="time" value="00:00">
+
             <div class="hide_post">
-                <input id="schedule" class="form-control" type="text" placeholder="오늘 일정을 추가하세요">
-            <div class="mybtu">
-                <button onclick="save_schedule()" type="button" class="btn btn-success">추가하기</button>
-                <button onclick="hide_box()" type="button" class="btn btn-outline-success">닫기</button>
-            </div>
+                <div class="put_sch">
+                    <input id="schedule" class="form-control" type="text" placeholder="오늘 일정을 추가하세요">
+                </div>
+                <div class="mybtu">
+                    <button onclick="save_schedule()" class="add_btn" >추가하기</button>
+                    <button onclick="hide_box()" class="close_btn">닫기</button>
+                </div>
             </div>
         </div>
     </div>
-    <div class="show_post">
-        <button onclick="show_box()" type="button" class="btn btn-outline-success">일정 추가하기</button>
+
+    <div class="main_btn">
+        <div class="show_post">
+            <button onclick="show_box()" type="button" class="btn btn-outline-success">일정 추가하기</button>
+
+            <button onclick="window.location.href='/beforeSC'" type="button" class="btn btn-outline-success">지난
+                일정열람
+            </button>
+
+
+        </div>
     </div>
-    <div>
-        <button onclick="window.location.href='/beforeSC'">go</button>
-    </div>
-        <nav class="navi"><u onclick="logout()" type="button">로그아웃</u></nav>
         <div class="myboxs" id="bucket-list">
+        </div>
+
+    </div>
+    <div class="post_end">
+        <div class="out_btn">
+            <nav class="navi">
+                <button style="margin-bottom: 20px;" onclick="logout()" type="button" class="button is-danger is-outlined">로그아웃</button>
+            </nav>
+        </div>
     </div>
 </body>
 </html>
