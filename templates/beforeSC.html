@@ -14,20 +14,107 @@
     <title>Title</title>
     <style>
         .container{
-            background-color: green;
+
             max-width: 200px;
-            width: 95%;
-            margin: 10px 0px 0px auto;
+            width: 100%;
+            margin: auto 0 0 0;
+            align-items: flex-start;
+            float: left;
         }
         body {
-                background-color: rgba(28, 101, 185, 0.45);
+                background-color: rgba(225, 225, 188, 0.45);
                 min-height: 100vh;
-                padding-top: 3.25rem;
+        }
+
+        .card {
+            width: 95%;
+            width: 400px;
+            padding: 20px;
+            box-shadow: 0px 0px 5px 0px green;
+            margin: 20px auto;
+            border-radius: 10px;
+            margin: 10px 10px 5px 10px;
+            background-color: transparent;
+        }
+         .card-group {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+        li {
+            list-style: none;
+        }
+        .secmypic {
+            width: 100%;
+            height: 200px;
+
+            background-image: url('https://i0.wp.com/sharehows.com/wp-content/uploads/2017/04/%EC%A0%9C%EC%A3%BC%EC%9D%BC%EC%A0%95.jpg?fit=800%2C400&ssl=1');
+            background-position: center;
+            background-size: cover;
+
+            color: rgba(30, 176, 26, 0.68);
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .secmypic > h1 {
+            font-weight: 800;
+            font-size: 4rem;
+            text-shadow: 7px 7px 7px #020202;
+        }
+        .back_all {
+            width: 95%;
+            maxwidth: 400px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
             }
 
-        .card{
-            width: 95%;
-            margin: 5px 10px 5px 10px;
+
+
+
+        .se_btn {
+            background: green;
+            color: white;
+            border: none;
+            position: relative;
+            height: 40px;
+            font-size: 1.6em;
+            padding: 0 2em;
+            cursor: pointer;
+            transition: 800ms ease all;
+            outline: none;
+            border-radius: 5px;
+        }
+
+        .se_btn:hover {
+            background: rgba(15, 82, 12, 0.6);
+            color: rgb(9, 255, 0);
+        }
+
+        .se_btn:before, se_btn:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            height: 2px;
+            width: 0;
+            background: #1AAB8A;
+            transition: 400ms ease all;
+        }
+
+        .se_btn:after {
+            right: inherit;
+            top: inherit;
+            left: 0;
+            bottom: 0;
+        }
+
+        .se_btn:hover:before, se_btn:hover:after {
+            width: 100%;
+            transition: 800ms ease all;
         }
     </style>
     <script>
@@ -39,22 +126,24 @@
     </script>
 </head>
 <body>
-    <nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
-            <a class="navbar-item" href="/">
-                <img src="{{ url_for('static', filename='logo.png') }}">
-                <strong class="is-sparta"
-                        style="font-family: 'Stylish', sans-serif;font-size: 2rem;">HowTo</strong>
-            </a>
+     <div class="secmypic">
+        <h1>HowTo(befor)</h1>
+    </div>
+    <div class="back_all">
+        <div class="container">
+            <form action="/beforeSC" method="POST">
+                <input type="text" class="form-control " id="date" placeholder="ex)0516" name="id">
+                <button type="submit" class="se_btn" id="search">search</button>
+            </form>
         </div>
-    </nav>
-    <div class="container">
-        <form action="/beforeSC" method="POST">
-{#                <div class="form-floating col-sm-5">#}
-                    <input type="text" class="form-control " id="date" placeholder="ex)0516" name="id">
-            {#                </div>#}
-            <button type="submit" class="btn btn-primary" id="search">search</button>
-        </form>
+
+        <nav class="navbar is-fixed-top is-white" role="navigation" aria-label="main navigation">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="/">
+                    <button type="button" class="btn btn-outline-success">돌아가기</button>
+                </a>
+            </div>
+        </nav>
     </div>
 
     <div class="card-group">
@@ -83,7 +172,7 @@
                         {% endfor %}
                     {% else %}
 {#                        데이터 없을 시#}
-                        <h2>no data</h2>
+                        <h2>아직 지난 일정이 없어요!</h2>
                     {% endif %}
                 </div>
                 </p>
@@ -112,7 +201,7 @@
                             {% endif %}
                         {% endfor %}
                     {% else %}
-                        <h2>no data</h2>
+                        <h2>아직 지난 일정이 없어요!</h2>
                     {% endif %}
                 </div>
                 </p>
@@ -141,7 +230,7 @@
                             {% endif %}
                         {% endfor %}
                     {% else %}
-                        <h2>no data</h2>
+                        <h2>아직 지난 일정이 없어요!</h2>
                     {% endif %}
                 </div>
                 </p>

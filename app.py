@@ -161,50 +161,54 @@ def schedule_get():
 
 @app.route('/beforeSC', methods=['POST', 'GET'])
 def beforeSC():
-    if request.method != 'POST':
-        return render_template('beforeSC.html')
+    if request.method == 'POST':
+        tk = request.cookies.get('mytoken')
+        id = jwt.decode(tk, SECRET_KEY, algorithms=['HS256'])['id']
 
-    tk = request.cookies.get('mytoken')
-    id = jwt.decode(tk, SECRET_KEY, algorithms=['HS256'])['id']
+        date = request.form['id']
+        if date != "":
+            sList = list(db.schedules.find({"id": id}, {'_id': False}))
+            schedule_list = sorted(sList, key=lambda x: x['id'])
+            schedule_list = sorted(schedule_list, key=lambda x: x['date'])
+            lowList = []
 
-    date = request.form['id']
-    if date != "":
-        sList = list(db.schedules.find({"id": id}, {'_id': False}))
-        schedule_list = sorted(sList, key=lambda x: x['id'])
-        lowList = []
+            #이전 날짜들의 스케쥴을 전부 저장
+            for sche in schedule_list:
+                if sche['date'] > date:
+                    break
+                lowList.append(sche)
 
-        #이전 날짜들의 스케쥴을 전부 저장
-        for sche in schedule_list:
-            if sche['date'] > date:
-                break
-            lowList.append(sche)
+            #print(lowList)
 
-        firList = []
-        secList = []
-        thrList = []
+            firList = []
+            secList = []
+            thrList = []
 
-        ##low list가 비어있는 상태
-        if not lowList:
-            return render_template('beforeSC.html')
 
-        #date를 비교해가며 list들에 추가
-        #무조건 한 리스트는 찰 수 밖에 없어서 예외처리 할 필요 없음
-        for i in range(len(lowList) - 1, -1, -1):
-            if lowList[i]["date"] == lowList[0]["date"]:
-                firList.append(lowList[i])
-            elif lowList[i]["date"] != firList[0]["date"]:
-                secList.append(lowList[i])
-            elif lowList[i]["date"] != secList[0]["date"]:
-                thrList.append(lowList[i])
-            else:
-                break
+            ##low list가 비어있는 상태
+            if not lowList:
+                return render_template('beforeSC.html')
 
-        firList = sorted(firList, key=lambda x: x['time'])
-        secList = sorted(secList, key=lambda x: x['time'])
-        thrList = sorted(thrList, key=lambda x: x['time'])
-        return render_template('beforeSC.html', firSchedule = firList,
-                               secSchedule = secList,
-                               thrSchedule = thrList)
+            print(lowList)
+
+            #date를 비교해가며 list들에 추가
+            #무조건 한 리스트는 찰 수 밖에 없어서 예외처리 할 필요 없음
+            for i in range(len(lowList) - 1, -1, -1):
+                if lowList[i]["date"] == lowList[len(lowList) - 1]["date"]:
+                    firList.append(lowList[i])
+                elif lowList[i]["date"] != firList[0]["date"]:
+                    secList.append(lowList[i])
+                elif lowList[i]["date"] != secList[0]["date"]:
+                    thrList.append(lowList[i])
+                else:
+                    break
+
+            firList = sorted(firList, key=lambda x: x['time'])
+            secList = sorted(secList, key=lambda x: x['time'])
+            thrList = sorted(thrList, key=lambda x: x['time'])
+            return render_template('beforeSC.html', firSchedule = firList,
+                                   secSchedule = secList,
+                                   thrSchedule = thrList)
 
     return render_template('beforeSC.html')
 
