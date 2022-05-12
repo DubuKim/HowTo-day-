@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 import jwt
-import datetime
 import hashlib
+import base64
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 from werkzeug.utils import secure_filename
 from datetime import datetime, timedelta
@@ -24,7 +24,7 @@ def home():
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
 
-        return render_template('main.html')
+        return render_template('/index.html')
     except jwt.ExpiredSignatureError:
         return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
     except jwt.exceptions.DecodeError:
@@ -52,7 +52,6 @@ def sign_in():
         }
         #token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
         token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
-
         return jsonify({'result': 'success', 'token': token})
     # 찾지 못하면
     else:
@@ -78,7 +77,9 @@ def check_dup():
     exists = bool(db.users.find_one({"username": username_receive}))
     return jsonify({'result': 'success', 'exists': exists})
 
-
+@app.route('/logout', methods=['POST'])
+def logout():
+    return render_template('login.html')
 
 
 
@@ -91,14 +92,17 @@ def sc():
 def schedule_post():
     schedule_receive = request.form['schedule_give']
     date_receive = request.form['date_give']
-
-    schedule_list = list(db.schedules.find({}, {'_id': False}))
-    count = len(schedule_list) + 1
+    time_receive = request.form['time_give']
+    date = date_receive[5:7] + date_receive[8:10]
+    time = time_receive[:2] + time_receive[3:]
+    tk = request.cookies.get('mytoken')
+    id = jwt.decode(tk, SECRET_KEY, algorithms=['HS256'])['id']
 
     doc = {
-        'num': count,
+        'id' : id,
+        'time': time,
         'schedule': schedule_receive,
-        'date': date_receive,
+        'date': date,
         'emoticon': '',
         'comment': '',
         'done': 0
@@ -110,69 +114,99 @@ def schedule_post():
 
 @app.route("/sc/schedule/done", methods=["POST"])
 def schedule_done():
-    num_receive = request.form['num_give']
-    db.schedules.update_one({'num': int(num_receive)},{'$set':{'done': 1}})
+
+    time_receive = request.form['time_give']
+    if len(time_receive) == 3:
+        time_receive = oct(int(time_receive))
+        time_receive = "0" + time_receive[2:]
+
+    db.schedules.update_one({'time': time_receive}, {'$set': {'done': 1}})
     return jsonify({'msg': '일정 완료!'})
 
 @app.route("/sc/schedule/fix", methods=["POST"])
 def schedule_fix():
-    num_receive = request.form['num_give']
+    time_receive = request.form['time_give']
+    if len(time_receive) == 3:
+        time_receive = oct(int(time_receive))
+        time_receive = "0" + time_receive[2:]
 
-    db.schedules.update_one({'num': int(num_receive)},{'$set':{'done': 0}})
+    db.schedules.update_one({'time': time_receive}, {'$set': {'done': 0}})
     return jsonify({'msg': '수정 완료!'})
 
 @app.route("/sc/schedule/comment", methods=["POST"])
 def comment_save():
     comment_receive = request.form['comment_give']
     emoticon_receive = request.form['emoticon_give']
-    num_receive = request.form['num_give']
+    time_receive = request.form['time_give']
 
-    db.schedules.update_one({'num': int(num_receive)}, {"$set" : {"comment":comment_receive}})
-    db.schedules.update_one({'num': int(num_receive)}, {"$set": {"emoticon": emoticon_receive}})
-
-    # db.schedules.update_one({'num': int(num_receive)}, { '$push' : { "comment": comment_receive,
-    #      "emoticon": emoticon_receive}})
-    # db.schedules.update({'num': int(num_receive)}, {'$push': {"comment": comment_receive}})
+    db.schedules.update_one({'time': time_receive}, {"$set" : {"comment": comment_receive}})
+    db.schedules.update_one({'time': time_receive}, {"$set": {"emoticon": emoticon_receive}})
 
     return jsonify({'msg': '추가 완료!'})
 
 @app.route("/sc/schedule", methods=["GET"])
 def schedule_get():
-    schedule_list = list(db.schedules.find({}, {'_id': False}))
+    tk = request.cookies.get('mytoken')
+    id = jwt.decode(tk, SECRET_KEY, algorithms=['HS256'])['id']
 
+    date = datetime.now()
+    date = str(date.month) + str(date.day)
+    if len(date) == 3:
+        date = "0" + date
+    schedule_list = list(db.schedules.find({"id": id, "date": date}, {'_id': False}))
+    schedule_list = sorted(schedule_list, key=lambda x: x['time'])
     return jsonify({'schedules': schedule_list})
 
 
 
-@app.route('/test', methods=['POST', 'GET'])
-def test():
-    if request.method == 'POST':
-        date = request.form['id']
-        if date != "":
-            aa = list(db.hyukFan.find({}, {'_id': False}))
-            aa = sorted(aa, key=lambda comment: comment['name'])
-            lowList = []
-            for comments in aa:
-                if comments['name'] >= date:
-                    break
-                lowList.append(comments)
+@app.route('/beforeSC', methods=['POST', 'GET'])
+def beforeSC():
+    if request.method != 'POST':
+        return render_template('beforeSC.html')
 
-            firList = []
-            secList = []
-            thrList = []
-            for i in range(len(lowList) - 1, 0, -1):
-                if lowList[i]["name"] == lowList[-1]["name"]:
-                    firList.append(lowList[i])
-                elif lowList[i]["name"] == lowList[-1 - len(firList)]["name"]:
-                    secList.append(lowList[i])
-                elif lowList[i]["name"] == lowList[-1 - len(firList) - len(secList)]["name"]:
-                    thrList.append(lowList[i])
-                else:
-                    break
+    tk = request.cookies.get('mytoken')
+    id = jwt.decode(tk, SECRET_KEY, algorithms=['HS256'])['id']
 
-            return render_template('test.html', firSchedule = firList, secSchedule = secList, thrSchedule = thrList)
+    date = request.form['id']
+    if date != "":
+        sList = list(db.schedules.find({"id": id}, {'_id': False}))
+        schedule_list = sorted(sList, key=lambda x: x['id'], reverse=True)
+        lowList = []
 
-    return render_template('test.html')
+        #이전 날짜들의 스케쥴을 전부 저장
+        for sche in schedule_list:
+            if sche['date'] > date:
+                break
+            lowList.append(sche)
+
+        firList = []
+        secList = []
+        thrList = []
+
+        ##low list가 비어있는 상태
+        if not lowList:
+            return render_template('beforeSC.html')
+
+        #끝에서 부터 date를 비교해가며 list들에 추가
+        #무조건 한 리스트는 찰 수 밖에 없어서 예외처리 할 필요 없음
+        for i in range(0, len(lowList)):
+            if lowList[i]["date"] == lowList[0]["date"]:
+                firList.append(lowList[i])
+            elif lowList[i]["date"] != firList[0]["date"]:
+                secList.append(lowList[i])
+            elif lowList[i]["date"] != secList[0]["date"]:
+                thrList.append(lowList[i])
+            else:
+                break
+
+        firList = sorted(firList, key=lambda x: x['time'])
+        secList = sorted(secList, key=lambda x: x['time'])
+        thrList = sorted(secList, key=lambda x: x['time'])
+        print(firList)
+        return render_template('beforeSC.html', firSchedule = firList,
+                               secSchedule = secList,
+                               thrSchedule = thrList)
+
 
 
 

@@ -14,7 +14,7 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&display=swap" rel="stylesheet">
 
-    <title>인생 버킷리스트</title>
+    <title></title>
 
     <style>
         * {
@@ -130,14 +130,36 @@
         .slect_emotion {
             margin-top: 20px;
         }
+        .timesty {margin-bottom: 20px;}
     </style>
     <script>
         $(document).ready(function () {
             show_schedule();
         });
 
-        let whichCard = 0;
+        window.onload = function() {                         // 페이지가 로딩되면 실행
+            printTime();
+        }
 
+        function printTime() {
+            let clock = document.getElementById("clock");            // 출력할 장소 선택
+            let now = new Date();                                                  // 현재시간
+            let month = now.getMonth() + 1
+            let day = now.getDate()
+            //1자리면 앞에 0을 붙여줌
+            if(now.getMonth() < 10){
+                month = "0" + (now.getMonth() + 1)
+            }
+            if(now.getDate() < 10){
+                day = "0" + now.getDate()
+            }
+            let nowTime = now.getFullYear() + "년" + month + "월" + day + "일";
+            clock.innerHTML = nowTime;           // 현재시간을 출력
+            setTimeout("printTime()", 1000);         // setTimeout(“실행할함수”,시간) 시간은1초의 경우 1000
+        }
+
+
+        let scTime = "";
         function show_schedule() {
             $.ajax({
                 type: "GET",
@@ -147,37 +169,36 @@
                     let rows = response['schedules']
                     for (let i = 0; i < rows.length; i++) {
                         let schedule = rows[i]['schedule']
-                        let num = rows[i]['num']
                         let done = rows[i]['done']
                         let comment = rows[i]['comment']
                         let emoticon = rows[i]['emoticon']
-
+                        let date = rows[i]['date']
+                        let time = rows[i]['time']
                         let temp_html = ""
-
                         if(done == 0) {
                             temp_html =`<li>
-                                            <h2> ${schedule}</h2>
-                                            <div class="emoticon">?</div>
+                                            <h10>${time.slice(0, 2) + ":" + time.slice(2,)}</h10>&nbsp&nbsp<h2>${schedule}</h2>
+                                            <div class="emoticon">done?</div>
                                             <div class="form-check form-check-inline">
-                                                <input onclick="done_schedule(${num}); show_comment(${num})" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                                <input onclick="done_schedule(${time}); show_comment(${time})" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
                                             </div>
                                         </li>`
-                            whichCard = num
+                            scTime = time
                         }
                         else{
                             temp_html = `<li>
+                                             <h10>${time.slice(0, 2) + ":" + time.slice(2,)}</h10>&nbsp&nbsp
                                              <h2>${schedule}</h2>
-                                             <h4>${comment}</h4>
                                              <div class="emoticon">${emoticon}</div>
                                              <div class="form-check form-check-inline">
-                                                <input onclick="fix_schedule(${num})" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                                                <input onclick="fix_schedule(${time})" class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
                                              </div>
-                                         </li>`
+                                         </li>
+                                            <div class="">　　🖊️　comment :　${comment}`
                         }
 
                         $('#bucket-list').append(temp_html)
                     }
-
                 }
             });
         }
@@ -185,11 +206,14 @@
         function save_schedule() {
             let schedule = $('#schedule').val()
             let today = new Date().toISOString();
-
+            let time = $('#time').val()
+            if(schedule == ""){
+                return alert("일정을 입력해주세요!")
+            }
             $.ajax({
                 type: "POST",
                 url: "/sc/schedule",
-                data: {schedule_give: schedule, date_give : today },
+                data: {schedule_give: schedule, date_give : today , time_give : time},
                 success: function (response) {
                     alert(response["msg"])
                     window.location.reload()
@@ -197,35 +221,34 @@
             });
         }
 
-        function done_schedule(num) {
+        function done_schedule(time) {
             $.ajax({
                 type: "POST",
                 url: "/sc/schedule/done",
-                data: {num_give: num},
+                data: {time_give: time},
                 success: function (response) {
                     alert(response["msg"])
                 }
             });
         }
 
-        function fix_schedule(num) {
+        function fix_schedule(time) {
             $.ajax({
                 type: "POST",
                 url: "/sc/schedule/fix",
-                data: {num_give: num},
+                data: {time_give: time},
                 success: function (response) {
-                    //alert(response["msg"])
+                    alert(response["msg"])
                     window.location.reload()
                 }
             });
         }
 
         function push_comment(){
-            console.log(whichCard)
             $.ajax({
                 type: "POST",
                 url: "/sc/schedule/comment",
-                data: {comment_give: $('#comment').val(), emoticon_give: $('#emoticon').val(), num_give: whichCard},
+                data: {comment_give: $('#comment').val(), emoticon_give: $('#emoticon').val(), time_give: scTime},
                 success: function (response) {
                     alert(response["msg"])
                     window.location.reload()
@@ -248,11 +271,28 @@
             $('#mypost2').hide()
         }
 
+        function logout() {
+             $.ajax({
+                type: "POST",
+                url: "/logout",
+                success: function (response) {
+                    alert("잘가요!")
+                    window.location.replace("/login")
+                }
+            });
+
+        }
+
+        function nowDate(){
+
+        }
+
     </script>
 </head>
 <body>
     <div class="mypic">
         <h1>HOW TO(DAY)</h1>
+        <div><span id="clock"></span></div>
     </div>
     <div class="mycoment" id="mypost2">
         <div class="form-floating">
@@ -264,11 +304,11 @@
                 <button class="btn btn-outline-secondary" type="button">성취도</button>
                 <select class="form-select" id="emoticon" aria-label="Example select with button addon">
                     <option selected>--선택하기--</option>
-                    <option value="1">😆</option>
-                    <option value="2">😄</option>
-                    <option value="3">😀</option>
-                    <option value="4">😞</option>
-                    <option value="5">😨</option>
+                    <option value="😆">😆</option>
+                    <option value="😄">😄</option>
+                    <option value="😀">😀</option>
+                    <option value="😞">😞</option>
+                    <option value="😨">😨</option>
                 </select>
             </div>
         </div>
@@ -281,6 +321,7 @@
     </div>
     <div class="mybox" id="mypost">
         <div class="mybucket">
+            <input type="time" class="timesty" id="time" value="00:00">
             <div class="hide_post">
                 <input id="schedule" class="form-control" type="text" placeholder="오늘 일정을 추가하세요">
             <div class="mybtu">
@@ -294,8 +335,9 @@
         <button onclick="show_box()" type="button" class="btn btn-outline-success">일정 추가하기</button>
     </div>
     <div>
-        <button onclick="window.location.href='/test'">go</button>
+        <button onclick="window.location.href='/beforeSC'">go</button>
     </div>
+        <nav class="navi"><u onclick="logout()" type="button">로그아웃</u></nav>
         <div class="myboxs" id="bucket-list">
     </div>
 </body>

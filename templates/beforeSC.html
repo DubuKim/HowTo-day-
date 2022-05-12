@@ -35,24 +35,7 @@
             show_list()
         });
 
-    {#    function show_list() {#}
-    {#        $.ajax({#}
-    {#            type: "GET",#}
-    {#            url: "/test/show",#}
-    {#            data: {},#}
-    {#            success: function (response) {#}
-    {#                rows = response['abc']#}
-    {##}
-    {#                for (let i = 0; i < rows.length; i++) {#}
-    {#                    let comment = rows[i]['comment']#}
-    {#                    let name = rows[i]['name']#}
-    {#                    let temp_html = `${comment}`#}
-    {#                    console.log(temp_html)#}
-    {#                    $('#testlist').append(temp_html)#}
-    {#                }#}
-    {#            }#}
-    {#        });#}
-    {#    }#}
+
     </script>
 </head>
 <body>
@@ -61,16 +44,12 @@
             <a class="navbar-item" href="/">
                 <img src="{{ url_for('static', filename='logo.png') }}">
                 <strong class="is-sparta"
-                        style="font-family: 'Stylish', sans-serif;font-size: 2rem; larger;">HowTo</strong>
+                        style="font-family: 'Stylish', sans-serif;font-size: 2rem;">HowTo</strong>
             </a>
         </div>
     </nav>
-    <div>
-        <ul id="testlist">
-        </ul>
-    </div>
     <div class="container">
-        <form action="/test" method="POST">
+        <form action="/beforeSC" method="POST">
 {#                <div class="form-floating col-sm-5">#}
                     <input type="text" class="form-control " id="date" placeholder="ex)0516" name="id">
             {#                </div>#}
@@ -82,17 +61,20 @@
         <div class="card">
             <div class="card-body">
                 {% if firSchedule %}
-                    <h5 class="card-title">{{ firSchedule[0]["name"] }}</h5>
+{#                    카드 제목#}
+                    <h5 class="card-title">{{ firSchedule[0]["date"] }}</h5>
                 {% endif %}
                 <p class="card-text">
                 <div class="schedule">
                     {% if firSchedule %}
                         {% for schedule in firSchedule %}
-                            {% set name = schedule["name"] %}
-                            {% set comment = schedule["comment"] %}
-                            <li>{{ name }} : {{ comment }}</li>
+                            {% set time = schedule["time"] %}
+                            {% set comment = schedule["schedule"] %}
+{#                            카드 내용 입력#}
+                            <li>{{ time[:2] }}:{{ time[2:] }} : {{ comment }}</li>
                         {% endfor %}
                     {% else %}
+{#                        데이터 없을 시#}
                         <h2>no data</h2>
                     {% endif %}
                 </div>
@@ -102,15 +84,16 @@
         <div class="card">
             <div class="card-body">
                 {% if secSchedule %}
-                    <h5 class="card-title">{{ secSchedule[0]["name"] }}</h5>
+                    <h5 class="card-title">{{ secSchedule[0]["date"] }}</h5>
                 {% endif %}
                 <p class="card-text">
                 <div class="schedule">
                     {% if secSchedule %}
                         {% for schedule in secSchedule %}
-                            {% set name = schedule["name"] %}
-                            {% set comment = schedule["comment"] %}
-                            <li>{{ name }} : {{ comment }}</li>
+                            {% set time = schedule["time"] %}
+                            {% set comment = schedule["schedule"] %}
+{#                            카드 내용 입력#}
+                            <li>{{ time[:2] }}:{{ time[2:] }} : {{ comment }}</li>
                         {% endfor %}
                     {% else %}
                         <h2>no data</h2>
@@ -122,15 +105,16 @@
         <div class="card">
             <div class="card-body">
                 {% if thrSchedule %}
-                    <h5 class="card-title">{{ thrSchedule[0]["name"] }}</h5>
+                    <h5 class="card-title">{{ thrSchedule[0]["date"] }}</h5>
                 {% endif %}
                 <p class="card-text">
                 <div class="schedule">
                     {% if thrSchedule %}
                         {% for schedule in thrSchedule %}
-                            {% set name = schedule["name"] %}
-                            {% set comment = schedule["comment"] %}
-                            <li>{{ name }} : {{ comment }}</li>
+                            {% set time = schedule["time"] %}
+                            {% set comment = schedule["schedule"] %}
+{#                            카드 내용 입력#}
+                            <li>{{ time[:2] }}:{{ time[2:] }} : {{ comment }}</li>
                         {% endfor %}
                     {% else %}
                         <h2>no data</h2>
@@ -140,14 +124,5 @@
             </div>
         </div>
     </div>
-
-
-{#    <div class="schedule">#}
-{#        {% for schedule in firSchedule %}#}
-{#            {% set name = schedule["name"] %}#}
-{#            {% set comment = schedule["comment"] %}#}
-{#            <li>{{ name }} : {{ comment }}</li>#}
-{#        {% endfor %}#}
-{#    </div>#}
 </body>
 </html>
