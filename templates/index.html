@@ -317,7 +317,26 @@
             show_schedule();
         });
 
-        let scTime = "";
+        window.onload = function() {                         // 페이지가 로딩되면 실행
+            printTime();
+        }
+
+        function printTime() {
+            let clock = document.getElementById("clock");            // 출력할 장소 선택
+            let now = new Date();                                                  // 현재시간
+            let month = now.getMonth() + 1
+            let day = now.getDate()
+            //1자리면 앞에 0을 붙여줌
+            if(now.getMonth() < 10){
+                month = "0" + (now.getMonth() + 1)
+            }
+            if(now.getDate() < 10){
+                day = "0" + now.getDate()
+            }
+            let nowTime = now.getFullYear() + "년" + month + "월" + day + "일";
+            clock.innerHTML = nowTime;           // 현재시간을 출력
+            setTimeout("printTime()", 1000);         // setTimeout(“실행할함수”,시간) 시간은1초의 경우 1000
+        }
 
         function show_schedule() {
             $.ajax({
@@ -446,6 +465,7 @@
 <div>
     <div class="mypic">
         <h1>HOW TO(DAY)</h1>
+        <div><span id="clock"></span></div>
     </div>
     <div class="mycoment" id="mypost2">
         <div class="form-floating">
@@ -495,19 +515,10 @@
             <button onclick="window.location.href='/beforeSC'" type="button" class="btn btn-outline-success">지난
                 일정열람
             </button>
-
-
+            <button style="margin-bottom: 20px; float: right;" onclick="logout()" type="button" class="button is-danger is-outlined">로그아웃</button>
         </div>
     </div>
         <div class="myboxs" id="bucket-list">
-        </div>
-
-    </div>
-    <div class="post_end">
-        <div class="out_btn">
-            <nav class="navi">
-                <button style="margin-bottom: 20px;" onclick="logout()" type="button" class="button is-danger is-outlined">로그아웃</button>
-            </nav>
         </div>
     </div>
 </body>
