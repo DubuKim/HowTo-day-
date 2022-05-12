@@ -116,13 +116,11 @@ def schedule_post():
 def schedule_done():
 
     time_receive = request.form['time_give']
-    print(time_receive)
     if time_receive == "0":
         time_receive = "0000"
     elif len(time_receive) <= 3:
         time_receive = oct(int(time_receive))
         time_receive = "0" + time_receive[2:]
-    print(time_receive)
 
     db.schedules.update_one({'time': time_receive}, {'$set': {'done': 1}})
     return jsonify({'msg': '일정 완료!'})
@@ -130,7 +128,9 @@ def schedule_done():
 @app.route("/sc/schedule/fix", methods=["POST"])
 def schedule_fix():
     time_receive = request.form['time_give']
-    if len(time_receive) == 3:
+    if time_receive == "0":
+        time_receive = "0000"
+    elif len(time_receive) <= 3:
         time_receive = oct(int(time_receive))
         time_receive = "0" + time_receive[2:]
 
